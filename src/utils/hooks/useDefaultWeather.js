@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import {
-  useLazyGetCurrentLocationDetailsQuery,
-  useLazyGetWeatherDetailsBySearchQuery,
-} from "../redux/GetWeatherInfo";
-import { DEFAULT_CITY } from "../constants";
+import { useContext, useEffect, useState } from "react";
+import { useLazyGetWeatherDetailsBySearchQuery } from "../redux/GetWeatherInfo";
+import { DEFAULT_CITY, WEATHER_API_KEY } from "../constants";
+import { appContext } from "../appContext";
 
 function useDefaultWeather() {
+  const { city, setCity } = useContext(appContext);
+  const [loading, setLoading] = useState(true);
   const [
     getDefaultDetails,
     {
@@ -15,47 +15,47 @@ function useDefaultWeather() {
       isSuccess: defaultDetailsSuccess,
     },
   ] = useLazyGetWeatherDetailsBySearchQuery();
-  const [
-    getCurrentDetails,
-    {
-      isFetching: currentDetailsLoading,
-      error: currentDetailsErr,
-      data: currentDetailsData,
-      isSuccess: currentDetailsSuccess,
-    },
-  ] = useLazyGetCurrentLocationDetailsQuery();
 
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            getCurrentDetails({
-              lat: position.coords.latitude,
-              lon: position.coords.longitude,
-            });
+          async (position) => {
+            setLoading(true);
+            let res = await fetch(
+              `http://api.openweathermap.org/geo/1.0/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&limit=1&appid=${WEATHER_API_KEY}`
+            );
+            res = await res.json();
+            setCity(res?.[0]?.name);
+            setLoading(false);
           },
           (error) => {
             // Call this default implementation if permissions denied
-            getDefaultDetails({ search: DEFAULT_CITY });
+            setCity(DEFAULT_CITY);
             console.log(error.message);
           }
         );
       } else {
         // Call this default implementation
-        getDefaultDetails({ search: DEFAULT_CITY });
+        setCity(DEFAULT_CITY);
         console.log("Geolocation is not supported by your browser.");
       }
     };
 
     getLocation();
-  }, [getCurrentDetails, getDefaultDetails]);
+  }, []);
+
+  useEffect(() => {
+    if (city) {
+      getDefaultDetails({ search: city });
+    }
+  }, [city]);
 
   return {
-    isFetching: currentDetailsLoading || defaultDetailsLoading,
-    error: currentDetailsErr || defaultDetailsErr,
-    data: currentDetailsData || defaultDetailsData,
-    isSuccess: currentDetailsSuccess || defaultDetailsSuccess,
+    isFetching: defaultDetailsLoading || loading,
+    error: defaultDetailsErr,
+    data: defaultDetailsData,
+    isSuccess: defaultDetailsSuccess,
   };
 }
 

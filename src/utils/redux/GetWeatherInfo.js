@@ -12,12 +12,6 @@ export const weatherInfo = createApi({
           request?.type || "metric"
         }&appid=${WEATHER_API_KEY}`,
     }),
-    getCurrentLocationDetails: builder.query({
-      query: (request) =>
-        `2.5/weather?lat=${request.lat}&lon=${request.lon}&units=${
-          request?.type || "metric"
-        }&appid=${WEATHER_API_KEY}`,
-    }),
     getForecastDetails: builder.query({
       query: (request) =>
         `2.5/forecast?q=${request.search}&units=${
@@ -30,6 +24,5 @@ export const weatherInfo = createApi({
 export const {
   useGetWeatherDetailsBySearchQuery,
   useLazyGetWeatherDetailsBySearchQuery,
-  useLazyGetCurrentLocationDetailsQuery,
   useGetForecastDetailsQuery,
 } = weatherInfo;
