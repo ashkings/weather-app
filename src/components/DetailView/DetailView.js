@@ -29,7 +29,7 @@ function DetailView() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
-        <div class="mb-4 ">
+        <div className="mb-4 ">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center">
             <li>
               <button
