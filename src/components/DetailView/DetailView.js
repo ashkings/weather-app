@@ -1,22 +1,21 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Code } from "react-content-loader";
 import ForecastWeeks from "./ForecastWeeks";
 import Highlight from "./Highlight";
 import { appContext } from "../../utils/appContext";
 import { useGetForecastDetailsQuery } from "../../utils/redux/GetWeatherInfo";
-import { DEFAULT_CITY } from "../../utils/constants";
 import user from "../../assets/icons/user.png";
 
 function DetailView() {
-  const { metricType, setMetricType } = useContext(appContext);
+  const { metricType, setMetricType, city } = useContext(appContext);
 
-  const { isFetching, data, error } = useGetForecastDetailsQuery({
-    search: DEFAULT_CITY,
-  });
-
-  useEffect(() => {
-    console.log(metricType, "metric");
-  }, [metricType]);
+  const { isFetching, data, error } = useGetForecastDetailsQuery(
+    {
+      search: city,
+      type: metricType,
+    },
+    { skip: !city }
+  );
 
   if (isFetching) {
     return <Code />;

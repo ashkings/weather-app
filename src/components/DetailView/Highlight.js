@@ -1,15 +1,42 @@
-import React, { useContext } from "react";
-import { appContext } from "../../utils/appContext";
+import React, { useContext, useEffect, useMemo } from "react";
 import moment from "moment";
+import { Code } from "react-content-loader";
+import { appContext } from "../../utils/appContext";
+import { useGetWeatherDetailsBySearchQuery } from "../../utils/redux/GetWeatherInfo";
 import UV from "../../assets/icons/UV.png";
 import humidity from "../../assets/icons/humidity.png";
 import sunrise from "../../assets/icons/sunrise.png";
 import sunset from "../../assets/icons/sunset.png";
 import wsw from "../../assets/icons/wsw.png";
 import airQuality from "../../assets/icons/airQuality.png";
-
 function Highlight() {
-  const { weatherDetails } = useContext(appContext);
+  const { weatherDetails, setWeatherDetails, metricType, city } =
+    useContext(appContext);
+  const { isFetching, data, error } = useGetWeatherDetailsBySearchQuery(
+    {
+      search: city,
+      type: metricType,
+    },
+    { skip: !city }
+  );
+
+  const weathDetails = useMemo(() => {
+    if (data && Object.keys(data).length > 0) {
+      return data;
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setWeatherDetails(weathDetails);
+  }, [weathDetails, setWeatherDetails]);
+
+  if (isFetching) {
+    return <Code />;
+  }
+  if (error) {
+    return <div className="text-red-400">{error?.data?.message}</div>;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="font-sans">Today's Highlights</div>
