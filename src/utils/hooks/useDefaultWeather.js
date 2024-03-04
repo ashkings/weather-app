@@ -23,7 +23,7 @@ function useDefaultWeather() {
           async (position) => {
             setLoading(true);
             let res = await fetch(
-              `http://api.openweathermap.org/geo/1.0/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&limit=1&appid=${WEATHER_API_KEY}`
+              `https://api.openweathermap.org/geo/1.0/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&limit=1&appid=${WEATHER_API_KEY}`
             );
             res = await res.json();
             setCity(res?.[0]?.name);
