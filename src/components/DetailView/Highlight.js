@@ -48,7 +48,7 @@ function Highlight() {
         <div className="flex flex-col gap-6 bg-white border border-white rounded-lg py-2 px-5 w-[27.5%] h-48">
           <div className="text-[#B3B3B3]">Wind status</div>
           <div className="flex gap-2 items-end">
-            <div className="text-6xl">{weatherDetails?.wind?.speed}</div>
+            <div className="text-6xl">{weatherDetails?.wind?.speed || ""}</div>
             <div>km/h</div>
           </div>
 
@@ -63,7 +63,9 @@ function Highlight() {
             <img alt="sunrise" src={sunrise} className="w-10" />
             <div>
               <div>
-                {moment(weatherDetails?.sys?.sunrise * 1000).format("h:mm A")}
+                {weatherDetails?.sys?.sunrise
+                  ? moment(weatherDetails?.sys?.sunrise * 1000).format("h:mm A")
+                  : ""}
               </div>
               <div className="text-sm text-[#B5B5B5]">- 1m 46s</div>
             </div>
@@ -72,7 +74,9 @@ function Highlight() {
             <img alt="sunset" src={sunset} className="w-10" />
             <div>
               <div>
-                {moment(weatherDetails?.sys?.sunset * 1000).format("h:mm A")}
+                {weatherDetails?.sys?.sunset
+                  ? moment(weatherDetails?.sys?.sunset * 1000).format("h:mm A")
+                  : ""}
               </div>
               <div className="text-sm text-[#B5B5B5]">+ 2m 22s</div>
             </div>
@@ -82,7 +86,9 @@ function Highlight() {
           <div className="text-[#B3B3B3]">Humidity</div>
           <div className="flex justify-between">
             <div>
-              <span className="text-6xl">{weatherDetails?.main?.humidity}</span>{" "}
+              <span className="text-6xl">
+                {weatherDetails?.main?.humidity || ""}
+              </span>{" "}
               <span className="absolute">%</span>
             </div>
             <img alt="humidity" src={humidity} className="w-8" />
@@ -94,7 +100,9 @@ function Highlight() {
           <div className="text-[#B3B3B3]">Visibility</div>
           <div className="flex gap-2 items-end">
             <div className="text-6xl">
-              {parseFloat(weatherDetails?.visibility / 1000).toFixed(2)}
+              {weatherDetails?.visibility
+                ? parseFloat(weatherDetails?.visibility / 1000).toFixed(2)
+                : ""}
             </div>
             <div>km</div>
           </div>
